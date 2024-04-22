@@ -1,0 +1,20 @@
+train: [
+  "./dataset/fisheye8k/train",
+  "./dataset/synthetic_visdrone/VisDrone2019-DET-train/images",
+]
+
+val: [
+  "./dataset/fisheye8k/test",
+]
+
+# number of classes
+nc: 5
+
+# class names
+names: [
+    "bus",
+    "bike",
+    "car",
+    "pedestrian",
+    "truck",
+]
