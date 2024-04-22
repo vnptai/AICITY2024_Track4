@@ -1,0 +1,6 @@
+dataset/fisheye8k/
+dataset/visdrone/
+dataset/synthetic_visdrone/
+dataset/fisheye_test
+dataset/synthetic_visdrone/train.json
+dataset/visdrone/train.json
