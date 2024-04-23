@@ -75,12 +75,61 @@ python ./dataprocessing/format_conversion/yolo2coco.py --images_dir ./dataset/sy
 
 ## Models Training
 ### Co-DETR
+```
+cd ./train/CO-DETR
+```
+1. Train the Co-DETR model on the VisDrone and Fisheye8k fold 0 dataset.
+```
+tools/dist_train.sh projects/CO-DETR/configs/codino/train_fold0.py 4
+```
+2. Train the Co-DETR model on the VisDrone and Fisheye8k fold 1 dataset.
+```
+tools/dist_train.sh projects/CO-DETR/configs/codino/train_fold1.py 4
+```
+3. Train the Co-DETR model on the VisDrone and Fisheye8k fold 2 dataset.
+```
+tools/dist_train.sh projects/CO-DETR/configs/codino/train_fold2.py 4
+```
+4. Train the Co-DETR model on the VisDrone and Fisheye8k merge training and testing dataset.
+```
+tools/dist_train.sh projects/CO-DETR/configs/codino/train_all.py 4
+```
+5. Train the Co-DETR model on the VisDrone and Fisheye8k merge training and testing and pseudo dataset.
+```
+tools/dist_train.sh projects/CO-DETR/configs/codino/train_pseudo.py 4
+```
 
 ### YOLOR-W6
 
 ### YOLOv9-e
 
 ### InternImage
+
+## Models Inferencing
+### Co-DETR
+```
+cd ./infer/CO-DETR
+```
+1. Infer the Co-DETR model on the VisDrone and Fisheye8k fold 0.
+```
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold0.py 4
+```
+2. Infer the Co-DETR model on the VisDrone and Fisheye8k fold 1.
+```
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold1.py 4
+```
+3. Infer the Co-DETR model on the VisDrone and Fisheye8k fold 2.
+```
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold2.py 4
+```
+4. Infer the Co-DETR model on the VisDrone and Fisheye8k merge training and testing.
+```
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_all.py 4
+```
+5. Infer the Co-DETR model on the VisDrone and Fisheye8k merge training and testing and pseudo.
+```
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_pseudo.py 4
+```
 
 
 
