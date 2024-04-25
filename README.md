@@ -106,6 +106,7 @@ tools/dist_train.sh projects/CO-DETR/configs/codino/train_pseudo.py 4
 ### InternImage
 
 ## Models Inferencing
+Download checkpoints from URL https://1drv.ms/f/s!AqGcdYmA92Q_m8Yg2hOB1PAk_15WBw?e=dFbNte
 ### Co-DETR
 ```
 cd ./infer/CO-DETR
