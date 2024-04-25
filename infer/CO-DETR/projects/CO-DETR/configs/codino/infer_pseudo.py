@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/media/hungdv/Source/Code/AICityChallenge2024/mmdetection')
+sys.path.append('./')
 
 _base_ = ['co_dino_5scale_r50_8xb2_1x_coco.py']
 
@@ -86,7 +86,7 @@ train_pipeline = [
     dict(type='PackDetInputs')
 ]
 
-data_root = '/Data/Visdrone_Fisheye8K/'
+data_root = ''
 metainfo = {
     'classes': ('Bus', 'Bike', 'Car', 'Pedestrian', 'Truck'),
 }
@@ -97,15 +97,15 @@ train_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         pipeline=train_pipeline,
-        data_root=data_root,
+        data_root= data_root,
         metainfo=metainfo,
-        ann_file='dataset/json_labels/vis_fish_pseudo.json',
-        data_prefix=dict(img=data_root + 'images/')
+        ann_file='../../dataset/json_labels/vis_fish_all.json',
+        data_prefix=dict(img='../../dataset/all/')
     ))
 
 test_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='Resize', scale=(2048, 1280), keep_ratio=True),
+    dict(type='Resize', scale=(2048, 1920), keep_ratio=True),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(
         type='PackDetInputs',
@@ -119,21 +119,22 @@ val_dataloader = dict(
         pipeline=test_pipeline,
         data_root=data_root,
         metainfo=metainfo,
-        ann_file='dataset/json_labels/pseudo_test.json',
-        data_prefix=dict(img=data_root + 'images/')
+        ann_file='../../dataset/json_labels/val.json',
+        data_prefix=dict(img='../../dataset/all/')
         ))
 test_dataloader = val_dataloader
 
 val_evaluator = dict(  # Validation evaluator config
     type='CocoMetric',  # The coco metric used to evaluate AR, AP, and mAP for detection and instance segmentation
-    ann_file='dataset/json_labels/pseudo_test.json',  # Annotation file path
+    ann_file='../../dataset/json_labels/val.json',  # Annotation file path
     metric=['bbox'],  # Metrics to be evaluated, `bbox` for detection and `segm` for instance segmentation
-    format_only=False)
+    format_only=True,
+    outfile_prefix='./work_dirs/infer_pseudo')
 test_evaluator = val_evaluator  # Testing evaluator config
 
 optim_wrapper = dict(optimizer=dict(lr=1e-4))
 
-max_epochs = 20
+max_epochs = 16
 train_cfg = dict(max_epochs=max_epochs)
 
 param_scheduler = [
@@ -142,6 +143,6 @@ param_scheduler = [
         begin=0,
         end=max_epochs,
         by_epoch=True,
-        milestones=[10],
+        milestones=[8],
         gamma=0.1)
 ]

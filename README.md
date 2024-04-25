@@ -195,41 +195,37 @@ sh dist_train.sh
 
 
 ## Models Inferencing
-### Download checkpoints:
-For quick reproduction, you can download the checkpoints released below:
-
-| **Model** | **Training data**                   |           |
-|:---------:|:------------------------------------|:---------:|
-|Co-DETR    |VisDrone + Fisheye8k fold 0          |           |
-|Co-DETR    |Synthetic VisDrone + Fisheye8k fold 0|           |
-|Yolor-w6   |VisDrone + Fisheye8k fold 0          |           |
-|Yolov9-e   |VisDrone + Fisheye8k fold 0          |           |
-|InternImage|VisDrone + Fisheye8k fold 0          |           |
-
+Download checkpoints from URL https://1drv.ms/f/s!AqGcdYmA92Q_m8Yg2hOB1PAk_15WBw?e=dFbNte
 ### Co-DETR
 ```
 cd ./infer/CO-DETR
 ```
 1. Infer the Co-DETR model on the VisDrone and Fisheye8k fold 0.
 ```
-tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold0.py 4
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_all.py ../../checkpoints/best_vis_fish_fold0.pth 4
 ```
 2. Infer the Co-DETR model on the VisDrone and Fisheye8k fold 1.
 ```
-tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold1.py 4
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold1.py ../../checkpoints/best_vis_fish_fold1.pth 4
 ```
 3. Infer the Co-DETR model on the VisDrone and Fisheye8k fold 2.
 ```
-tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold2.py 4
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold2.py ../../checkpoints/best_vis_fish_fold2.pth 4
 ```
 4. Infer the Co-DETR model on the VisDrone and Fisheye8k merge training and testing.
 ```
-tools/dist_test.sh projects/CO-DETR/configs/codino/infer_all.py 4
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_all.py ../../checkpoints/best_vis_fish_all.pth 4
 ```
 5. Infer the Co-DETR model on the VisDrone and Fisheye8k merge training and testing and pseudo.
 ```
-tools/dist_test.sh projects/CO-DETR/configs/codino/infer_pseudo.py 4
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_pseudo.py ../../checkpoints/best_vis_fish_pseudo.pth 4
 ```
+### Merge results
+```
+cd ./infer/
+python fuse_results.py
+```
+
 
 ### YOLOR-W6
 For inferencing, follow these instructions
