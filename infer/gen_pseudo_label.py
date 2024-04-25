@@ -18,15 +18,12 @@ def filter_val_label(val_label_path, thresh_hold = [0.445, 0.426, 0.433, 0.420, 
 
 annotation = '../dataset/json_labels/val.json'
 
-pred_results = ['./CO-DETR/work_dirs/infer_pseudo.bbox.json',
-                './CO-DETR/work_dirs/infer_all.bbox.json',
-                './CO-DETR/work_dirs/infer_fold0.bbox.json',
-                '../evaluation/yolor_w6_vis+fis_conf_001_iou_065.json',
-                '../evaluation/interimage_vis_fis.json',
-                '../evaluation/yolov9_vis+fis_conf_001_iou_075_val.json',
-                './CO-DETR/work_dirs/infer_synthetic.bbox.json']###
-out_file = 'final.json'
-weights = [9,4,4,3,2,3,4]
+pred_results = ['./CO-DETR/work_dirs/infer_fold0.bbox.json',
+                './CO-DETR/work_dirs/infer_fold1.bbox.json',
+                './CO-DETR/work_dirs/infer_fold2.bbox.json']###
+
+out_file = 'pseudo_label.json'
+weights = [3,1,1]
 
 fusion_iou_thr = 0.75
 skip_box_thr = 0.15
@@ -82,22 +79,21 @@ for image_id, res in predict.items():
             'score': float(score)
         })
     prog_bar.update()
-dump(result, file=out_file)
 
-day_label = filter_val_label(out_file, [0.3, 0.3, 0.3, 0.3, 0.25])
-night_label = filter_val_label(out_file, [0.1, 0.15, 0.2, 0.15, 0.2])
+val_json_data = json.load(open(annotation))
+predict_json_data = result
+for predict_data in predict_json_data:
+    if predict_data['score'] < 0.4: continue
+    bbox_data = predict_data
+    bbox_data['id'] = len(val_json_data['annotations']) + 1
+    width, height = predict_data['bbox'][2], predict_data['bbox'][3]
+    bbox_data['area'] = width * height
+    bbox_data['iscrowd'] = 0
+    val_json_data['annotations'].append(bbox_data)
 
-final_json_data = []
-id_image_dict = json.load(open("image_id.json"))
-for annotation in day_label:
-    image_id = annotation["image_id"]
-    if image_id not in id_image_dict:
-        final_json_data.append(annotation)
-for annotation in night_label:
-    image_id = annotation["image_id"]
-    if image_id in id_image_dict:
-        final_json_data.append(annotation)
-json.dump(final_json_data, open(out_file, "w"))
+with open(out_file, 'w') as f:
+    json.dump(val_json_data, f)
+
 
 
 
