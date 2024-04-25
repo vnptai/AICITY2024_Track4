@@ -4,18 +4,6 @@ from mmengine.fileio import dump, load
 from mmdet.models.utils import weighted_boxes_fusion
 import json
 
-def filter_val_label(val_label_path, thresh_hold = [0.445, 0.426, 0.433, 0.420, 0.401]):
-    val_json_data = json.load(open(val_label_path))
-    new_json_data = []
-    for annotation in val_json_data:
-        if annotation['score'] < thresh_hold[0] and annotation['category_id'] == 0: continue #bus
-        if annotation['score'] < thresh_hold[1] and annotation['category_id'] == 1: continue #bike
-        if annotation['score'] < thresh_hold[2] and annotation['category_id'] == 2: continue #car
-        if annotation['score'] < thresh_hold[3] and annotation['category_id'] == 3: continue #pedestrian
-        if annotation['score'] < thresh_hold[4] and annotation['category_id'] == 4: continue #truck
-        new_json_data.append(annotation)
-    return new_json_data
-
 annotation = '../dataset/json_labels/val.json'
 
 pred_results = ['./CO-DETR/work_dirs/infer_fold0.bbox.json',
