@@ -130,6 +130,12 @@ tools/dist_test.sh projects/CO-DETR/configs/codino/infer_all.py ../../checkpoint
 ```
 tools/dist_test.sh projects/CO-DETR/configs/codino/infer_pseudo.py ../../checkpoints/best_vis_fish_pseudo.pth 4
 ```
+### Merge results
+```
+cd ./infer/
+python fuse_results.py
+```
+
 
 
 
