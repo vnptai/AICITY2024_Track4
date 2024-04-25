@@ -16,9 +16,9 @@ For reproduction, please follow the **Instructions** below.
 ## Installation
 
 ## Data preparation
-1. Download the Fisheye8K dataset, and put the data into `./dataset/fisheye8k/`
+1. Download the Fisheye8K dataset, and put the data into `./dataset/fisheye8k/`. Link to the fisheye8k dataset: [link](https://scidm.nchc.org.tw/en/dataset/fisheye8k/resource/f6e7500d-1d6d-48ea-9d38-c4001a17170e/nchcproxy)
 
-2. Download the VisDrone dataset, and put the data into `./dataset/visdrone/`.
+2. Download the VisDrone dataset, and put the data into `./dataset/visdrone/`. In our experiments, we only work with the VisDrone2019-DET-train subdataset. So downloading only the train set is suffice.
 
 3. Download the FisheyeEval1k test dataset, and put the data into `./dataset/fisheye_test/`. The `./dataset/` directory will look like below:
 
@@ -195,6 +195,17 @@ sh dist_train.sh
 
 
 ## Models Inferencing
+### Download checkpoints:
+For quick reproduction, you can download the checkpoints released below:
+
+| **Model** | **Training data**                   |           |
+|:---------:|:------------------------------------|:---------:|
+|Co-DETR    |VisDrone + Fisheye8k fold 0          |           |
+|Co-DETR    |Synthetic VisDrone + Fisheye8k fold 0|           |
+|Yolor-w6   |VisDrone + Fisheye8k fold 0          |           |
+|Yolov9-e   |VisDrone + Fisheye8k fold 0          |           |
+|InternImage|VisDrone + Fisheye8k fold 0          |           |
+
 ### Co-DETR
 ```
 cd ./infer/CO-DETR
@@ -220,7 +231,25 @@ tools/dist_test.sh projects/CO-DETR/configs/codino/infer_all.py 4
 tools/dist_test.sh projects/CO-DETR/configs/codino/infer_pseudo.py 4
 ```
 
+### YOLOR-W6
+For inferencing, follow these instructions
+1. Move to the YOLOR-W6 directory
+```
+
+```
 
 
+### YOLOv9-e
+For inferencing, follow these instructions
+1. Move to the YOLO directory
+```
 
+```
+
+### InternImage
+For inferencing, follow these instructions
+1. Move to the InternImage directory
+```
+cd 
+```
 
