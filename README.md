@@ -278,7 +278,7 @@ conda activate yolov9
 
 2. Run inference using the yolov9 model. Note that the iou threshold is set to 0.75.
 ```
-python detect_dual.py --source '../../dataset/fisheye_test/images' --img 1280 --device 0 --weights '../../checkpoints/yolov9_e_best_checkpoint.pt' --name yolov9_e --iou 0.75 --save-txt --save-conf
+python detect_dual.py --source '../../dataset/fisheye_test/images' --img 1280 --device 0 --weights '../../checkpoints/yolov9_e_best_checkpoint.pt' --name yolov9_e --iou 0.75 --conf 0.01 --save-txt --save-conf
 ```
 
 3. Convert to submission format. Remember to modify the path to the corresponding labels_dir
