@@ -259,7 +259,9 @@ conda activate yolor
 ```
 
 2. Infer using the yolor model, note that the iou threshold is set to 0.65:
+```
 python detect.py --source ../../dataset/fisheye_test/images --weights ../../checkpoints/yolor_w6_best_checkpoint.pt --conf 0.01 --iou 0.65 --img-size 1280 --device 0 --save-txt --save-conf
+```
 
 3. Convert to submission format. Remember to modify the path to the corresponding labels_dir
 ```
