@@ -21,10 +21,10 @@ annotation = '../dataset/json_labels/val.json'
 pred_results = ['./CO-DETR/work_dirs/infer_pseudo.bbox.json',
                 './CO-DETR/work_dirs/infer_all.bbox.json',
                 './CO-DETR/work_dirs/infer_fold0.bbox.json',
-                '../evaluation/yolor_w6_vis+fis_conf_001_iou_065.json',
-                '../evaluation/interimage_vis_fis.json',
-                '../evaluation/yolov9_vis+fis_conf_001_iou_075_val.json',
-                './CO-DETR/work_dirs/infer_synthetic.bbox.json']###
+                './YoloR/yolor_w6.json',
+                './InternImage/detection/internimage.json',
+                './YoloV9/yolov9.json',
+                './CO-DETR/work_dirs/infer_syn_vis_fis.bbox.json']###
 out_file = 'final.json'
 weights = [9,4,4,3,2,3,4]
 

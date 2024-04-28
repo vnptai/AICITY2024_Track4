@@ -9,7 +9,7 @@ if __name__ == "__main__":
     parser.add_argument("--visdrone", type=str, default="./dataset/visdrone/VisDrone2019-DET-train", help="Path to visdrone dataset")
     parser.add_argument("--synthetic", type=str, default="./dataset/synthetic_visdrone/VisDrone2019-DET-train", help="Path to synthetic visdrone dataset")
     parser.add_argument("--fisheye_eval", type=str, default="./dataset/fisheye_test", help="Path to fisheyeEval1k test dataset")
-    parser.add_argument("--des_dir", type=str, default="./dataset/all_images" , help="Path to destination directory")
+    parser.add_argument("--des_dir", type=str, default="./dataset/all" , help="Path to destination directory")
 
     args = parser.parse_args()
 
@@ -25,7 +25,6 @@ if __name__ == "__main__":
         os.path.join(visdrone_dir, "images"),
         os.path.join(synthetic_dir, "images"),
         os.path.join(fisheye_eval_dir, "images"),
-        os.path.join(fisheye_eval_dir, "images1"),
     ]
 
     if not os.path.exists(des_dir):

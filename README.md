@@ -20,24 +20,19 @@ For reproduction, please follow the **Instructions** below.
 
 2. Download the VisDrone dataset, and put the data into `./dataset/visdrone/`. In our experiments, we only work with the VisDrone2019-DET-train subdataset. So downloading only the train set is suffice.
 
-3. Download the FisheyeEval1k test dataset, and put the data into `./dataset/fisheye_test/`. The `./dataset/` directory will look like below:
+3. Download the FisheyeEval1k test dataset, and put the data into `./dataset/fisheye_test/`. For convenience, all test images should be put into one folder named `images`. The `./dataset/` directory will look like below:
 
 ```
 - dataset
     - fisheye8k
-        - ms_coco-format_labels
         - test
         - train
     - visdrone
         - VisDrone2019-DET-test_dev
         - VisDrone2019-DET-train
         - VisDrone2019-DET-val
-        - test_dev.json
-        - train.json
-        - val.json
     - fisheye_test
         - images
-        - images1
 ```
 
 4. Convert the VisDrone dataset to YOLO format using the following command. Note that when converting the VisDrone dataset, we also map each category to their corresponding one in the Fisheye8k dataset, other categories are ignored. The labels will be saved in the "labels" directory under the corresponding sub-dataset
@@ -66,12 +61,15 @@ python ./dataprocessing/format_conversion/yolo2coco.py --images_dir ./dataset/vi
 python ./dataprocessing/format_conversion/yolo2coco.py --images_dir ./dataset/synthetic_visdrone/VisDrone2019-DET-train/images --labels_dir ./dataset/synthetic_visdrone/VisDrone2019-DET-train/labels --output ./dataset/synthetic_visdrone/train.json
 ```
 
-7. Merge the VisDrone and the Synthetic VisDrone datasets with the Fisheye8k dataset individually. We use a third party tool called COCO_merger for this task. For convenience, all images are copied into a single directory. We create a script for automatic images copying, however, the process can also be done manually. The script creates a new directory `./dataset/all_images` and save all the images into it, because the names of the images are different, this won't affect the training and the evaluation process.
+7. Merge the VisDrone and the Synthetic VisDrone datasets with the Fisheye8k dataset individually. For convenience, all images are copied into a single directory. We create a script for automatic images copying, however, the process can also be done manually. The script creates a new directory `./dataset/all_images` and save all the images into it, because the names of the images are different, this won't affect the training and the evaluation process.
 
 ```
 # Merge Fisheye8k, FisheyeEval1k and VisDrone images
 python ./dataprocessing/data_combine/copy_images.py
 
+# Merge coco files
+# Remember to change the list of files and output files in the script
+python ./dataprocessing/data_combine/merge_coco_files.py
 ```
 
 ## Models Training
@@ -111,6 +109,11 @@ tools/dist_train.sh projects/CO-DETR/configs/codino/train_all.py 4
 5. Train the Co-DETR model on the VisDrone and Fisheye8k merge training and testing and pseudo dataset.
 ```
 tools/dist_train.sh projects/CO-DETR/configs/codino/train_pseudo.py 4
+```
+
+6. Train the Co-DETR model on the VisDrone and Fisheye8k merge training and testing and pseudo dataset.
+```
+tools/dist_train.sh projects/CO-DETR/configs/codino/train_syn_vis_fis.py 4
 ```
 
 ### YOLOR-W6
@@ -239,12 +242,11 @@ tools/dist_test.sh projects/CO-DETR/configs/codino/infer_all.py ../../checkpoint
 ```
 tools/dist_test.sh projects/CO-DETR/configs/codino/infer_pseudo.py ../../checkpoints/best_vis_fish_pseudo.pth 4
 ```
-### Merge results
-```
-cd ./infer/
-python fuse_results.py
-```
 
+6. Infer the Co-DETR model on the Synthetic VisDrone and Fisheye8k merge training.
+```
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_syn_vis_fis.py ../../checkpoints/codetr_syn_vis_fish.pth 4
+```
 
 ### YOLOR-W6
 For inferencing, follow these instructions
@@ -299,3 +301,9 @@ conda activate internimage
 python demo_images.py --source ../../../dataset/fisheye_test/images --out ./internimage.json
 ```
 
+
+### Model ensembling
+```
+cd ./infer/
+python fuse_results.py
+```
