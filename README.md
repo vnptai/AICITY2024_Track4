@@ -78,6 +78,19 @@ python ./dataprocessing/data_combine/copy_images.py
 ### Co-DETR
 ```
 cd ./train/CO-DETR
+
+# Create the conda environment
+conda create -n codetr python=3.8 pip cudatoolkit-dev=11.7 gxx=11.4 cudnn
+
+# Install mmdet and dependencies
+pip install -U openmim
+mim install mmengine
+mim install "mmcv==2.0.0"
+pip install torch==1.13.0+cu117 torchvision==0.14.0+cu117 torchaudio==0.13.0 --extra-index-url https://download.pytorch.org/whl/cu117
+
+pip install -r requirements.txt
+pip install -v -e .
+
 ```
 1. Train the Co-DETR model on the VisDrone and Fisheye8k fold 0 dataset.
 ```
@@ -122,7 +135,7 @@ pip install -r requirements.txt
 cd ./train/YoloR
 
 # Train the yolor-w6 model for 250 epochs
-python train.py --batch-size 8 --img 1280 1280 --data ../../dataset/visdrone_fisheye8k.yaml --cfg cfg/yolor_w6.cfg --weights './yolor-w6-paper-555.pt' --device 0 --name yolor_w6 --hyp hyp.scratch.1280.yaml --epochs 250
+python train.py --batch-size 8 --img 1280 1280 --data ../../dataset/visdrone_fisheye8k.yaml --cfg models/yolor-w6.yaml --weights './yolor-w6-paper-555.pt' --device 0 --name yolor_w6 --hyp hyp.scratch.1280.yaml --epochs 250
 ```
 The checkpoints will be saved in `./train/YoloR/runs/train/`
 
@@ -146,7 +159,7 @@ pip install -r requirements.txt
 cd ./train/YoloV9
 
 # Train the yolov9-e model from sratch for 250 epochs
-python train.py --batch-size 8 --img 1280 1280 --data ../../dataset/visdrone_fisheye8k.yaml --cfg models/detect/yolov9-e.cfg --weights '' --device 0 --name yolov9-e --hyp hyp.scratch.1280.yaml --epochs 250
+python train_dual.py --workers 8 --device 0 --batch 4 --data ../../dataset/visdrone_fisheye8k.yaml --img 1280 --cfg models/detect/yolov9-e.yaml --weights '' --name yolov9-e --hyp hyp.scratch-high.yaml --min-items 0 --epochs 250 --close-mosaic 15
 ```
 The checkpoints will be saved in './train/YoloV9/runs/train/'
 
@@ -154,7 +167,7 @@ The checkpoints will be saved in './train/YoloV9/runs/train/'
 Follow these instructions to train the InternImage
 1. Create conda environment
 ```
-conda create -n internimage python=3.8 pip cudatoolkit-dev=11.7 gxx=11.4
+conda create -n internimage python=3.8 pip cudatoolkit-dev=11.7 gxx=11.4 cudnn
 conda activate internimage
 # Move to the InternImage directory
 cd ./train/InternImage/
@@ -175,6 +188,9 @@ pip install timm==0.6.11 mmdet==2.28.1
 4. Install other requirements:
 ```
 pip install opencv-python termcolor yacs pyyaml scipy
+
+# To bypass the 'verify' TypeError in mmdet
+pip install yapf==0.40.1 
 ```
 
 5. Compile the CUDA operators
@@ -188,14 +204,17 @@ cd ..
 
 6. Train the InternImage model on the VisDrone+Fisheye8k dataset using 8 GPU
 ```
-# sh dist_train.sh <config-file> <gpu-num>
-sh dist_train.sh 
+# bash dist_train.sh <config-file> <gpu-num>
+bash dist_train.sh ./configs/coco/ai_city_challenge_2024_train.py 8
 ```
 
 
 
 ## Models Inferencing
-Download checkpoints from URL https://1drv.ms/f/s!AqGcdYmA92Q_m8Yg2hOB1PAk_15WBw?e=dFbNte
+
+### Checkpoints
+For quick reproduction, download checkpoints from this link below and put them in the `./checkpoints` directory: 
+- [checkpoints](https://1drv.ms/f/s!AqGcdYmA92Q_m8Yg2hOB1PAk_15WBw?e=dFbNte)
 ### Co-DETR
 ```
 cd ./infer/CO-DETR
@@ -229,23 +248,54 @@ python fuse_results.py
 
 ### YOLOR-W6
 For inferencing, follow these instructions
-1. Move to the YOLOR-W6 directory
+1. Move to the YOLOR-W6 directory and activate the yolor conda environment created in the training phase. If you haven't, see the **Training** section for instructions.
+```
+cd ./infer/YoloR
+
+# Activate the yolor environment
+conda activate yolor
 ```
 
-```
+2. Infer using the yolor model, note that the iou threshold is set to 0.65:
+python detect.py --source ../../dataset/fisheye_test/images --weights ../../checkpoints/yolor_w6_best_checkpoint.pt --conf 0.01 --iou 0.65 --img-size 1280 --device 0 --save-txt --save-conf
 
+3. Convert to submission format. Remember to modify the path to the corresponding labels_dir
+```
+python ../../dataprocessing/format_conversion/yolo2coco.py --images_dir ../../dataset/fisheye_test/images --labels_dir ./runs/detect/exp/labels --output ./yolor_w6.json --conf 1 --submission 1 --is_fisheye8k 1
+```
 
 ### YOLOv9-e
 For inferencing, follow these instructions
-1. Move to the YOLO directory
+1. Move to the YOLO directory and activate the yolov9 conda environment created in the training phase. If you haven't created the conda environment, see the **Training** section for instructions.
+```
+cd ./infer/YoloV9
+
+# Activate the yolov9 conda environment
+conda activate yolov9
 ```
 
+2. Run inference using the yolov9 model. Note that the iou threshold is set to 0.75.
+```
+python detect_dual.py --source '../../dataset/fisheye_test/images' --img 1280 --device 0 --weights '../../checkpoints/yolov9_e_best_checkpoint.pt' --name yolov9_e --iou 0.75 --save-txt --save-conf
+```
+
+3. Convert to submission format. Remember to modify the path to the corresponding labels_dir
+```
+python ../../dataprocessing/format_conversion/yolo2coco.py --images_dir ../../dataset/fisheye_test/images --labels_dir ./runs/detect/yolov9_e/labels --output ./yolov9.json --conf 1 --submission 1 --is_fisheye8k 1
 ```
 
 ### InternImage
 For inferencing, follow these instructions
 1. Move to the InternImage directory
 ```
-cd 
+cd ./infer/InternImage/detection
+
+# activate the conda environment
+conda activate internimage
+```
+
+2. Run inference (modify the path to checkpoint in the demo_images.py file if necessary). The result is saved in submission format by default
+```
+python demo_images.py --source ../../../dataset/fisheye_test/images --out ./internimage.json
 ```
 

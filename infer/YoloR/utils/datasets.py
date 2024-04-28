@@ -22,6 +22,7 @@ import pickle
 from copy import deepcopy
 from pycocotools import mask as maskUtils
 from torchvision.utils import save_image
+from torchvision.ops import roi_pool, roi_align, ps_roi_pool, ps_roi_align
 
 from utils.general import xyxy2xywh, xywh2xyxy
 from utils.torch_utils import torch_distributed_zero_first
@@ -144,7 +145,7 @@ class _RepeatSampler(object):
 
 
 class LoadImages:  # for inference
-    def __init__(self, path, img_size=640, auto_size=32):
+    def __init__(self, path, img_size=640, auto_size=64):
         p = str(Path(path))  # os-agnostic
         p = os.path.abspath(p)  # absolute path
         if '*' in p:
@@ -1293,5 +1294,3 @@ def flatten_recursive(path='../coco128'):
     create_folder(new_path)
     for file in tqdm(glob.glob(str(Path(path)) + '/**/*.*', recursive=True)):
         shutil.copyfile(file, new_path / Path(file).name)
-
-

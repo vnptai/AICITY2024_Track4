@@ -23,7 +23,7 @@ def get_image_Id(img_name):
     return imageId
 
 
-def yolo_2_coco(images_dir, labels_dir, output_file, use_fisheye8k_id=False):
+def yolo_2_coco(images_dir, labels_dir, output_file, use_fisheye8k_id=False, use_conf=False, is_submission=False):
     """
         Convert YOLO dataset to COCO json format
         - Params:
@@ -75,23 +75,36 @@ def yolo_2_coco(images_dir, labels_dir, output_file, use_fisheye8k_id=False):
             args = bbox.split(" ")
             category_id = int(args[0])
             center_x = int(float(args[1]) * img_w)
-            center_y = int(float(args[2]) * img_w)
+            center_y = int(float(args[2]) * img_h)
             bbox_w = int(float(args[3]) * img_w)
             bbox_h = int(float(args[4]) * img_h)
+            if use_conf:
+                score = round(float(args[5]), 6)
 
-            left = center_x - bbox_w//2
-            top = center_y - bbox_h//2
-
-            annotations.append({
-                "id": annotation_id,
-                "category_id": category_id,
-                "image_id": id,
-                "bbox": [left, top, bbox_w, bbox_h],
-                "segmentation": [],
-                "area": bbox_w * bbox_h,
-                "iscrowd": 0
-            })
-
+            left = int(center_x - bbox_w/2)
+            top = int(center_y - bbox_h/2)
+            
+            annotation_dict = {
+                    "id": annotation_id,
+                    "category_id": category_id,
+                    "image_id": id,
+                    "bbox": [left, top, bbox_w, bbox_h],
+                    "segmentation": [],
+                    "area": bbox_w * bbox_h,
+                    "iscrowd": 0
+                }
+        
+            if use_conf:
+                annotation_dict["score"] = score
+            
+            if is_submission:
+                assert(use_conf == True)
+                del annotation_dict["id"]
+                del annotation_dict["segmentation"]
+                del annotation_dict["area"]
+                del annotation_dict["iscrowd"]
+            
+            annotations.append(annotation_dict)
             annotation_id += 1
     
     data_dict = {}
@@ -99,8 +112,12 @@ def yolo_2_coco(images_dir, labels_dir, output_file, use_fisheye8k_id=False):
     data_dict["images"] = images
     data_dict["annotations"] = annotations
 
-    with open(output_file, "w") as f:
-        json.dump(data_dict, f)
+    if is_submission:
+        with open(output_file, "w") as f:
+            json.dump(annotations, f)
+    else:
+        with open(output_file, "w") as f:
+            json.dump(data_dict, f)
 
 
 if __name__ == "__main__":
@@ -109,13 +126,17 @@ if __name__ == "__main__":
     parser.add_argument("--labels_dir", type=str, default="../visdrone", help="Path to labels directory")
     parser.add_argument("--output", type=str, default="./output.json", help="Path to the output json file")
     parser.add_argument("--is_fisheye8k", type=bool, default=False, help="Whether to use the Fisheye8k imageId")
+    parser.add_argument("--conf", type=bool, default=False, help="Whether the text files contain confidence scores")
+    parser.add_argument("--submission", type=bool, default=False, help="Whether to generate the AI City 2024 submission format")
 
     args = parser.parse_args()
     images_dir = args.images_dir
     labels_dir = args.labels_dir
     output = args.output
     is_fisheye8k = args.is_fisheye8k
+    use_conf = args.conf
+    is_submission = args.submission
 
     print(is_fisheye8k)
 
-    yolo_2_coco(images_dir, labels_dir, output, is_fisheye8k)
+    yolo_2_coco(images_dir, labels_dir, output, is_fisheye8k, use_conf, is_submission)
