@@ -70,6 +70,10 @@ python ./dataprocessing/data_combine/copy_images.py
 # Merge coco files
 # Remember to change the list of files and output files in the script
 python ./dataprocessing/data_combine/merge_coco_files.py
+
+# Change line 6 from "./dataset/visdrone/train.json" -> "./dataset/synthetic_visdrone/train.json"
+# Change line 10 from visdrone_fisheye.json -> synthetic_visdrone_fisheye.json
+python ./dataprocessing/data_combine/merge_coco_files.py
 ```
 
 ## Models Training

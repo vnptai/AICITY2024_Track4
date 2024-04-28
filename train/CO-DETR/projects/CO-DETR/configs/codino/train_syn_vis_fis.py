@@ -83,7 +83,7 @@ train_pipeline = [
     dict(type='PackDetInputs')
 ]
 
-data_root = '../../../dataset/'
+data_root = '../../dataset/'
 metainfo = {
     'classes': ('Bus', 'Bike', 'Car', 'Pedestrian', 'Truck'),
 }
@@ -96,8 +96,8 @@ train_dataloader = dict(
         pipeline=train_pipeline,
         data_root=data_root,
         metainfo=metainfo,
-        ann_file=data_root + 'visdrone_fisheye.json',
-        data_prefix=dict(img=data_root + 'all')
+        ann_file='synthetic_visdrone_fisheye.json',
+        data_prefix=dict(img='all')
     ))
 
 test_pipeline = [
@@ -116,14 +116,14 @@ val_dataloader = dict(
         pipeline=test_pipeline,
         data_root=data_root,
         metainfo=metainfo,
-        ann_file=data_root + 'fisheye8k/test/test.json',
-        data_prefix=dict(img=data_root + 'all')
+        ann_file='fisheye8k/test/test.json',
+        data_prefix=dict(img='all')
         ))
 test_dataloader = val_dataloader
 
 val_evaluator = dict(  # Validation evaluator config
     type='CocoMetric',  # The coco metric used to evaluate AR, AP, and mAP for detection and instance segmentation
-    ann_file=data_root + 'fisheye8k/test/test.json',  # Annotation file path
+    ann_file='fisheye8k/test/test.json',  # Annotation file path
     metric=['bbox'],  # Metrics to be evaluated, `bbox` for detection and `segm` for instance segmentation
     format_only=False)
 test_evaluator = val_evaluator  # Testing evaluator config
