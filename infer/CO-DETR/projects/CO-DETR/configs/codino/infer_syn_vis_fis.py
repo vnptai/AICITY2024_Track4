@@ -105,7 +105,7 @@ train_dataloader = dict(
 
 test_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='Resize', scale=(1333, 1920), keep_ratio=True),
+    dict(type='Resize', scale=(2048, 1280), keep_ratio=True),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(
         type='PackDetInputs',
