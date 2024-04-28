@@ -1,5 +1,5 @@
 dataset_type = 'COCODataset'
-data_root = '../../fisheye_visdrone_coco/'
+data_root = '../../../dataset/all_images'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -77,9 +77,9 @@ data = dict(
     train=dict(
         type='CocoDataset',
         ann_file=
-        '/home/jovyan/aicity2024/track4/fisheye_visdrone_coco/coco_annotations/visdrone+fisheye_coco.json',
+        '../../../dataset/visdrone_fisheye.json',
         img_prefix=
-        '/home/jovyan/aicity2024/track4/fisheye_visdrone_coco/train/',
+        '../../../dataset/all_images',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(type='LoadAnnotations', with_bbox=True),
@@ -138,9 +138,9 @@ data = dict(
     val=dict(
         type='CocoDataset',
         ann_file=
-        '/home/jovyan/aicity2024/track4/fisheye_visdrone_coco/coco_annotations/test.json',
+        '../../../dataset/fisheye8k/test/test.json',
         img_prefix=
-        '/home/jovyan/aicity2024/track4/fisheye_visdrone_coco/test/images',
+        '../../../dataset/fisheye8k/test/test/images',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -164,9 +164,9 @@ data = dict(
     test=dict(
         type='CocoDataset',
         ann_file=
-        '/home/jovyan/aicity2024/track4/fisheye_visdrone_coco/coco_annotations/test.json',
+        '../../../dataset/fisheye8k/test/test.json',
         img_prefix=
-        '/home/jovyan/aicity2024/track4/fisheye_visdrone_coco/test/images',
+        '../../../dataset/fisheye8k/test/test/images',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -309,6 +309,6 @@ model = dict(
     test_cfg=dict(max_per_img=300))
 num_classes = 5
 classes = ('Bus', 'Bike', 'Car', 'Pedestrian', 'Truck')
-work_dir = './work_dirs/internimage_ai_city_2024'
+work_dir = './work_dirs/dino_4scale_internimage_l_1x_coco_0.1x_backbone_lr'
 auto_resume = False
 gpu_ids = range(0, 4)

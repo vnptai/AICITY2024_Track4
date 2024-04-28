@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    fisheye_8k_dir = args.Fisheye8k
+    fisheye_8k_dir = args.fisheye8k
     visdrone_dir = args.visdrone
     synthetic_dir = args.synthetic
     fisheye_eval_dir = args.fisheye_eval
