@@ -2,9 +2,12 @@
 
 # Robust Data Augmentation and Ensemble Method for Object Detection in Fisheye Camera Images
 
-Team name: VNPT AI
-
-Team ID: 9
+## Public leaderboard
+| Team ID | Team Name    | F1 score  |
+|---------|--------------|-----------|
+| 9       | **VNPT AI**  | 0.6406    |
+| 40      | NetsPresso   | 0.6196    |
+| 5       | SKKU-AutoLab | 0.6194    |
 
 # Descriptions:
 
@@ -14,6 +17,16 @@ For reproduction, please follow the **Instructions** below.
 # Instructions:
 
 ## Installation
+Install the following dependencies:
+```
+git-lfs         # For downloading json files
+conda           # Creating environments for inferencing and training
+```
+
+Install additional dependencies:
+```
+pip install -r requirements.txt
+```
 
 ## Data preparation
 1. Download the Fisheye8K dataset, and put the data into `./dataset/fisheye8k/`. Link to the fisheye8k dataset: [link](https://scidm.nchc.org.tw/en/dataset/fisheye8k/resource/f6e7500d-1d6d-48ea-9d38-c4001a17170e/nchcproxy)
@@ -28,11 +41,10 @@ For reproduction, please follow the **Instructions** below.
         - test
         - train
     - visdrone
-        - VisDrone2019-DET-test_dev
         - VisDrone2019-DET-train
-        - VisDrone2019-DET-val
     - fisheye_test
         - images
+    - json_labels
 ```
 
 4. Convert the VisDrone dataset to YOLO format using the following command. Note that when converting the VisDrone dataset, we also map each category to their corresponding one in the Fisheye8k dataset, other categories are ignored. The labels will be saved in the "labels" directory under the corresponding sub-dataset
@@ -223,12 +235,18 @@ bash dist_train.sh ./configs/coco/ai_city_challenge_2024_train.py 8
 For quick reproduction, download checkpoints from this link below and put them in the `./checkpoints` directory: 
 - [checkpoints](https://1drv.ms/f/s!AqGcdYmA92Q_m8Yg2hOB1PAk_15WBw?e=dFbNte)
 ### Co-DETR
+Move to the Co-DETR inference directory. Activate the Co-DETR conda environment. Run the install command to create symbolic links that are required to run mmdetection.
 ```
 cd ./infer/CO-DETR
+
+conda activate codetr
+
+pip install -v -e .
+
 ```
 1. Infer the Co-DETR model on the VisDrone and Fisheye8k fold 0.
 ```
-tools/dist_test.sh projects/CO-DETR/configs/codino/infer_all.py ../../checkpoints/best_vis_fish_fold0.pth 4
+tools/dist_test.sh projects/CO-DETR/configs/codino/infer_fold0.py ../../checkpoints/best_vis_fish_fold0.pth 4
 ```
 2. Infer the Co-DETR model on the VisDrone and Fisheye8k fold 1.
 ```
@@ -313,3 +331,26 @@ python demo_images.py --source ../../../dataset/fisheye_test/images --out ./inte
 cd ./infer/
 python fuse_results.py
 ```
+
+# Citation
+
+If you find our work useful, please cite the following:
+```text
+@inreview{Duong2024robust,  
+    author={Viet Hung Duong and Duc Quyen Nguyen and Thien Van Luong and Huan Vu and Tien Cuong Nguyen},  
+    title={Robust Data Augmentation and Ensemble Method for Object Detection in Fisheye Camera Images},  
+    booktitle={CVPR Workshop},
+    year={2024}  
+}
+```
+
+# Contact
+- Viet Hung Duong (hungdv@vnpt.vn)
+
+- Duc Quyen Nguyen (quyennd2000@vnpt.vn)
+
+- Thien Van Luong (thien.luongvan@phenikaa-uni.edu.vn)
+
+- Huan Vu (huan.vu@utc.edu.vn)
+
+- Tien Cuong Nguyen (cuongnt@vnpt.vn)
