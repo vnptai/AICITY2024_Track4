@@ -6,7 +6,7 @@ from tqdm import tqdm
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Copy Fisheye8k and VisDrone images into a single folder")
     parser.add_argument("--fisheye8k", type=str, default="./dataset/fisheye8k", help="Path to fisheye8k dataset")
-    parser.add_argument("--visdrone", type=str, default="./dataset/visdrone/VisDrone2019-DET-train", help="Path to visdrone dataset")
+    parser.add_argument("--visdrone", type=str, default="./dataset/visdrone", help="Path to visdrone dataset")
     parser.add_argument("--synthetic", type=str, default="./dataset/synthetic_visdrone/VisDrone2019-DET-train", help="Path to synthetic visdrone dataset")
     parser.add_argument("--fisheye_eval", type=str, default="./dataset/fisheye_test", help="Path to fisheyeEval1k test dataset")
     parser.add_argument("--des_dir", type=str, default="./dataset/all" , help="Path to destination directory")
@@ -22,7 +22,9 @@ if __name__ == "__main__":
     img_dirs = [
         os.path.join(fisheye_8k_dir, "train", "images"),
         os.path.join(fisheye_8k_dir, "test", "images"),
-        os.path.join(visdrone_dir, "images"),
+        os.path.join(visdrone_dir, "VisDrone2019-DET-train", "images"),
+        os.path.join(visdrone_dir, "VisDrone2019-DET-val", "images"),
+        os.path.join(visdrone_dir, "VisDrone2019-DET-test_dev", "images"),
         os.path.join(synthetic_dir, "images"),
         os.path.join(fisheye_eval_dir, "images"),
     ]
